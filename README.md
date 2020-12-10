@@ -65,4 +65,4 @@ change development or production run in server.py
     http://pycoder.net/bospy/presentation.html#title-slide
 
 ## ScreenShoot
-![enter image description here](https://i.ibb.co/DQW2WRV/Screen-Shoot.png)
+![enter image description here](https://raw.githubusercontent.com/IbnuGunawanPrayogo/Flask_boilerplate/master/ScreenShoot.png)
