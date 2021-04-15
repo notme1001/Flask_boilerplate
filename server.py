@@ -2,7 +2,7 @@
 
 import os
 from flask_script import Manager
-from api import myApp, db
+from api import myApp, server
 
 # NAME_APP : your app name
 # default : config default in your app
@@ -11,7 +11,7 @@ manager = Manager(api)
 
 @manager.shell
 def migration_db():
-    return dict(app=api, db=db)
+    return dict(app=api, mongo=server)
 
 if __name__ == '__main__':
     manager.run()

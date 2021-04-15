@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
-from ...models.users import Users
-from ...schemas.users import user_schema, users_schema
-from ...models.blacklist import Blacklist
+from ...helper.encrypt import Encrypt
+from ..models.Users import Users
+from ..models.blacklist import Blacklist
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 import datetime
 
@@ -18,15 +18,14 @@ class UserRegistration(Resource):
         
         new_user = {
             'username': data['username'],
-            'password': Users.hash_password(data['password'])
+            'password': Encrypt.hash_password(data['password'])
         }
 
         try:
-            user = user_schema.load(new_user)
-            user_schema.dump(user.create())
+            user = Users.createUser(new_user)
             return {
                 'message': 'User {} was created'.format(data['username']),
-                }
+            }
         except:
             return {'message': 'Something went wrong'}, 500
 
@@ -38,16 +37,15 @@ class UserLogin(Resource):
 
         if not current_user:
             return {'message': 'User {} doesn\'t exist'.format(data['username'])}
-        
-        if Users.check_password(current_user.password, data['password']):
+        if Encrypt.check_password(current_user['password'], data['password']):
             expires = datetime.timedelta(days=3)
             access_token = create_access_token(identity = data['username'], expires_delta=expires)
             refresh_token = create_refresh_token(identity = data['username'], expires_delta=expires)
             return {
-                'message': 'Logged in as {}'.format(current_user.username),
+                'message': 'Logged in as {}'.format(current_user['username']),
                 'access_token': access_token,
                 'refresh_token': refresh_token
-                }
+            }
         else:
             return {'message': 'Wrong credentials'}
 
@@ -57,8 +55,7 @@ class UserLogoutAccess(Resource):
     def post(self):
         jti = get_raw_jwt()['jti']
         try:
-            revoked_token = Blacklist(jti = jti)
-            revoked_token.create()
+            revoked_token = Blacklist.create(jti)
             return {'message': 'Access token has been revoked'}
         except:
             return {'message': 'Something went wrong'}, 500
@@ -69,8 +66,7 @@ class UserLogoutRefresh(Resource):
     def post(self):
         jti = get_raw_jwt()['jti']
         try:
-            revoked_token = Blacklist(jti = jti)
-            revoked_token.create()
+            revoked_token = Blacklist.create(jti)
             return {'message': 'Refresh token has been revoked'}
         except:
             return {'message': 'Something went wrong'}, 500
@@ -82,14 +78,6 @@ class TokenRefresh(Resource):
         current_user = get_jwt_identity()
         access_token = create_access_token(identity = current_user)
         return {'access_token': access_token}
-
-
-class AllUsers(Resource):
-    def get(self):
-        return Users.return_all()
-    
-    def delete(self):
-        return Users.delete_all()
 
 class SecretResource(Resource):
     @jwt_required
