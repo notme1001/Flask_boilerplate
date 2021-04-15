@@ -1,13 +1,13 @@
 
-# Boilerplate Flask with Mysql & JWT (Restful API)
+# Boilerplate Flask with MongoDB & JWT (Restful API)
 
-### Install Mysql
+### Install MongoDB
 
 > Ubuntu
-`sudo apt-get install mysql-server`
+`sudo apt install mongodb-org`
 
 > Windows
-Download [MySql](https://dev.mysql.com/downloads/installer/) or install [xampp](https://www.apachefriends.org/download.html)
+Download [MongoDB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/)
 
 ### Install Required
 
@@ -18,14 +18,6 @@ sudo apt-get install python-pip
 ```
 > Windows
 Download [Python](https://www.python.org/downloads/release/python-386/)
-
-In case Ubuntu  
-`sudo apt-get install python-mysql.connector`
-
-or 
-
-In case Mac  
-`brew install mysql-connector-python`
 
 > For all
 ``pip install virtualenv``
@@ -44,7 +36,7 @@ pip install -r requirements.txt
 
 ```
 set database for production or development in env.py
-    Example: mysql://username:password@hostname:3306/database_name
+    Example: mongodb://localhost:27017
 
 change development or production run in server.py
 ```
